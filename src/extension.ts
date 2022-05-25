@@ -2,7 +2,7 @@ import path = require("path");
 import * as vscode from "vscode";
 import * as fs from "fs";
 import { readHtml } from "./util";
-import { Document, trHandleBaidu } from "./translate";
+import { Document, trHandleBaidu, WebviewDocument } from "./translate";
 
 export function activate(context: vscode.ExtensionContext) {
     console.log("激活扩展");
@@ -55,7 +55,7 @@ async function runCommand(context: vscode.ExtensionContext, uri: vscode.Uri) {
     panel.webview.onDidReceiveMessage(async ({ type, data }) => {
         switch (type) {
             case "save":
-                doc = JSON.parse(data);
+                let doc: WebviewDocument = JSON.parse(data);
                 let fileName = path.join(path.dirname(doc.path), "tr_" + path.basename(doc.path));
                 if (doc.doctype === "json") {
                     for (let i = 0; i < doc.result.length; i++) {

@@ -20,9 +20,10 @@ function save() {
             continue;
         }
         let _name = items[i].childNodes[5].childNodes[3].title;
-        let _src = items[i].childNodes[5].childNodes[1].textContent;
+        // src的文本因为实现高亮特殊字符已被修改，不能使用
+        // let _src = items[i].childNodes[5].childNodes[1].textContent;
         let _dst = items[i].childNodes[5].childNodes[3].value;
-        doc.result.push({ name: _name, src: _src, dst: _dst });
+        doc.result.push({ name: _name, dst: _dst });
     }
     if (doc.result.length === 0) {
         vscode.postMessage({ type: "warn", data: "您尚未选择任何内容" });

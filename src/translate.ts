@@ -10,6 +10,15 @@ export type Document = {
     // [{翻译的名称,待翻译的原文，翻译结果}]
     result: Array<{ name: string; src: string; dst: string }>;
 };
+// 由 webview 返回的文档
+export type WebviewDocument = {
+    path: string;
+    str: string;
+    obj: JSON | any;
+    doctype: "json" | string;
+    // [{翻译的名称,待翻译的原文，翻译结果}]
+    result: Array<{ name: string; dst: string }>;
+};
 export async function trHandleBaidu(doc: Document, appid: string, secretkey: string) {
     let queryStr = "";
     for (let i = 0; i < doc.result.length; i++) {

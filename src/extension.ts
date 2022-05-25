@@ -55,26 +55,38 @@ async function runCommand(context: vscode.ExtensionContext, uri: vscode.Uri) {
     panel.webview.onDidReceiveMessage(async ({ type, data }) => {
         switch (type) {
             case "save":
-                let doc: WebviewDocument = JSON.parse(data);
-                let fileName = path.join(path.dirname(doc.path), "tr_" + path.basename(doc.path));
-                if (doc.doctype === "json") {
-                    for (let i = 0; i < doc.result.length; i++) {
-                        if (Object.prototype.hasOwnProperty.call(doc.obj, doc.result[i].name)) {
-                            doc.obj[doc.result[i].name] = doc.result[i].dst;
+                try {
+                    let doc: WebviewDocument = JSON.parse(data);
+                    let fileName = path.join(
+                        path.dirname(doc.path),
+                        "tr_" + path.basename(doc.path)
+                    );
+                    if (doc.doctype === "json") {
+                        for (let i = 0; i < doc.result.length; i++) {
+                            if (Object.prototype.hasOwnProperty.call(doc.obj, doc.result[i].name)) {
+                                doc.obj[doc.result[i].name] = doc.result[i].dst;
+                            }
                         }
-                    }
 
-                    fs.writeFileSync(fileName, JSON.stringify(doc.obj).replace(/","/g, '",\n"'));
-                } else {
-                    for (let i = 0; i < doc.result.length; i++) {
-                        doc.str = doc.str.replace(
-                            new RegExp(`(?<=${doc.result[i].name}\\=).+`, "g"),
-                            doc.result[i].dst
+                        fs.writeFileSync(
+                            fileName,
+                            JSON.stringify(doc.obj).replace(/","/g, '",\n"')
                         );
+                    } else {
+                        for (let i = 0; i < doc.result.length; i++) {
+                            doc.str = doc.str.replace(
+                                new RegExp(`(?<=${doc.result[i].name}\\=).+`, "g"),
+                                doc.result[i].dst
+                            );
+                        }
+                        fs.writeFileSync(fileName, doc.str);
                     }
-                    fs.writeFileSync(fileName, doc.str);
+                } catch (error) {
+                    panel.webview.postMessage({ type: "SaveFail" });
+                    vscode.window.showErrorMessage("保存失败:" + (error as Error).message);
+                    return;
                 }
-
+                panel.webview.postMessage({ type: "Savesuccess" });
                 break;
             case "warn":
                 vscode.window.showWarningMessage(data);
@@ -114,7 +126,7 @@ async function runCommand(context: vscode.ExtensionContext, uri: vscode.Uri) {
     try {
         await trHandleBaidu(doc, appid, secretkey);
     } catch (error) {
-        vscode.window.showErrorMessage("请求 API 时出现错误:" + error);
+        vscode.window.showErrorMessage("请求 API 时出现错误:" + (error as Error).message);
         return;
     }
     panel.webview.postMessage({ type: "Loadcomplete", data: JSON.stringify(doc) });

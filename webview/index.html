@@ -9,14 +9,21 @@
         <script type="text/javascript" src="./js/index.js"></script>
     </head>
     <body>
-        <p id="log">Hi!</p>
-        <div id="config"></div>
-        <div id="top-bar">这是顶栏</div>
+        <br />
         <div id="workbench"></div>
-        <div id="buttom-bar">
-            <label for="checkall">全选</label>
-            <input type="checkbox" name="checkall" id="checkall" onchange="selectAll()" />
-            <input type="button" value="保存" onclick="save()" id="savebutton" />
+        <div id="bottom-bar">
+            <label class="hide" for="checkall">全选</label>
+            <input
+                type="checkbox"
+                name="checkall"
+                id="checkall"
+                class="checkbox"
+                onchange="selectAll(this)"
+            />
+            <span id="log">log</span>
+            <input type="button" value="保存" onclick="save(this)" id="savebutton" />
         </div>
+
+        <input type="button" class="hide" value="test" onclick="test()" id="testbutton" />
     </body>
 </html>

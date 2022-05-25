@@ -6,10 +6,11 @@
         "email": "Hum-XC@outlook.com",
         "url": "https://github.com/HumXC"
     },
+    "icon": "icon.png",
     "displayName": "MCTranslater",
     "repository": "https://github.com/HumXC/MCTranslater",
     "description": "通过机翻协助诸如 Minecraft mod 等语言文件的翻译",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "engines": {
         "vscode": "^1.67.0"
     },

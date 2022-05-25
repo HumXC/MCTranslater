@@ -1,5 +1,11 @@
 {
     "name": "mctranslater",
+    "publisher": "Hum-XC",
+    "author": {
+        "name": "Hum-XC",
+        "email": "Hum-XC@outlook.com",
+        "url": "https://github.com/HumXC"
+    },
     "displayName": "MCTranslater",
     "repository": "https://github.com/HumXC/MCTranslater",
     "description": "通过机翻协助诸如 Minecraft mod 等语言文件的翻译",

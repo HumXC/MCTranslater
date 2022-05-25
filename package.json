@@ -1,5 +1,5 @@
 {
-    "name": "mctranslater",
+    "name": "mctranslator",
     "publisher": "HumXC",
     "author": {
         "name": "HumXC",
@@ -7,8 +7,8 @@
         "url": "https://github.com/HumXC"
     },
     "icon": "icon.png",
-    "displayName": "MCTranslater",
-    "repository": "https://github.com/HumXC/MCTranslater",
+    "displayName": "MCTranslator",
+    "repository": "https://github.com/HumXC/MCTranslator",
     "description": "通过机翻协助诸如 Minecraft mod 等语言文件的翻译",
     "version": "0.0.2",
     "engines": {
@@ -18,21 +18,21 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:mctranslater.openFile"
+        "onCommand:mctranslator.openFile"
     ],
     "main": "./dist/extension.js",
     "contributes": {
         "configuration": {
             "type": "object",
-            "title": "MCTranslater",
+            "title": "MCTranslator",
             "properties": {
-                "mctranslater.百度翻译_AppID": {
+                "mctranslator.百度翻译_AppID": {
                     "scope": "resource",
                     "type": "string",
                     "default": "",
                     "description": "百度翻译的APPID, 请前往 '百度翻译开放平台' 获取。"
                 },
-                "mctranslater.百度翻译_SecretKey": {
+                "mctranslator.百度翻译_SecretKey": {
                     "scope": "resource",
                     "type": "string",
                     "default": "",
@@ -42,7 +42,7 @@
         },
         "commands": [
             {
-                "command": "mctranslater.openFile",
+                "command": "mctranslator.openFile",
                 "title": "翻译语言文件"
             }
         ],
@@ -50,13 +50,13 @@
             "editor/context": [
                 {
                     "when": "editorFocus",
-                    "command": "mctranslater.openFile",
+                    "command": "mctranslator.openFile",
                     "group": "navigation"
                 }
             ],
             "explorer/context": [
                 {
-                    "command": "mctranslater.openFile",
+                    "command": "mctranslator.openFile",
                     "group": "navigation"
                 }
             ]

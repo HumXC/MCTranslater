@@ -6,7 +6,7 @@ import { Document, trHandleBaidu, WebviewDocument } from "./translate";
 
 export function activate(context: vscode.ExtensionContext) {
     console.log("激活扩展");
-    let disposable = vscode.commands.registerCommand("mctranslater.openFile", (uri) => {
+    let disposable = vscode.commands.registerCommand("mctranslator.openFile", (uri) => {
         runCommand(context, uri);
     });
 
@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 async function createPanel(context: vscode.ExtensionContext) {
     const panel = vscode.window.createWebviewPanel(
-        "mctranslater.tr",
+        "mctranslator.tr",
         "翻译工作台",
         { viewColumn: vscode.ViewColumn.Active, preserveFocus: true },
         {
@@ -42,7 +42,7 @@ async function runCommand(context: vscode.ExtensionContext, uri: vscode.Uri) {
         path: uri.fsPath,
     };
     // 获取配置
-    var conf = vscode.workspace.getConfiguration("mctranslater");
+    var conf = vscode.workspace.getConfiguration("mctranslator");
     var appid = conf.get("百度翻译_AppID") as string;
     var secretkey = conf.get("百度翻译_SecretKey") as string;
     if (appid === undefined || secretkey === undefined) {

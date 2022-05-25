@@ -6,8 +6,7 @@ export type Document = {
     path: string;
     str: string;
     obj: JSON | any;
-    isLoad: boolean;
-    doctype: "json" | "lang" | "unknow";
+    doctype: "json" | string;
     // [{翻译的名称,待翻译的原文，翻译结果}]
     result: Array<{ name: string; src: string; dst: string }>;
 };

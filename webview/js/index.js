@@ -43,12 +43,6 @@ function selectAll() {
         items[i].childNodes[3].checked = value;
     }
 }
-function test() {
-    vscode.postMessage({
-        command: "alert",
-        text: "🐛  on line ",
-    });
-}
 function addItem(items) {
     //items = [{ name: "a", src: "AA", dst: "BBB" }];
     let parent = document.getElementById("workbench");

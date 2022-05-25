@@ -1,7 +1,6 @@
 import path = require("path");
 import * as vscode from "vscode";
 import * as fs from "fs";
-import { baidu, checkBaiduError } from "./network";
 import { readHtml } from "./util";
 import { Document, trHandleBaidu } from "./translate";
 
@@ -38,7 +37,6 @@ async function runCommand(context: vscode.ExtensionContext, uri: vscode.Uri) {
     var doc: Document = {
         str: "",
         obj: {},
-        isLoad: false,
         doctype: "unknow",
         result: [],
         path: uri.fsPath,
@@ -92,8 +90,8 @@ async function runCommand(context: vscode.ExtensionContext, uri: vscode.Uri) {
         return;
     }
 
-    let ext: string = path.extname(uri.fsPath).replace(".", "");
-    if (ext === "json") {
+    doc.doctype = path.extname(uri.fsPath).replace(".", "");
+    if (doc.doctype === "json") {
         doc.obj = JSON.parse(doc.str);
         for (const key in doc.obj) {
             if (Object.prototype.hasOwnProperty.call(doc.obj, key)) {
@@ -102,7 +100,6 @@ async function runCommand(context: vscode.ExtensionContext, uri: vscode.Uri) {
                 console.log("errr");
             }
         }
-        doc.isLoad = true;
     } else {
         let strArr = doc.str.split("\n");
         for (let i = 0; i < strArr.length; i++) {

@@ -1,0 +1,84 @@
+{
+    "name": "mctranslater",
+    "displayName": "MCTranslater",
+    "description": "通过机翻协助诸如 Minecraft mod 等语言文件的翻译",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.67.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onCommand:mctranslater.openFile"
+    ],
+    "main": "./dist/extension.js",
+    "contributes": {
+        "configuration": {
+            "type": "object",
+            "title": "MCTranslater",
+            "properties": {
+                "mctranslater.百度翻译_AppID": {
+                    "scope": "resource",
+                    "type": "string",
+                    "default": "",
+                    "description": "百度翻译的APPID, 请前往 '百度翻译开放平台' 获取。"
+                },
+                "mctranslater.百度翻译_SecretKey": {
+                    "scope": "resource",
+                    "type": "string",
+                    "default": "",
+                    "description": "百度翻译的密钥, 请前往 '百度翻译开放平台' 获取。"
+                }
+            }
+        },
+        "commands": [
+            {
+                "command": "mctranslater.openFile",
+                "title": "翻译语言文件"
+            }
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "when": "editorFocus",
+                    "command": "mctranslater.openFile",
+                    "group": "navigation"
+                }
+            ],
+            "explorer/context": [
+                {
+                    "command": "mctranslater.openFile",
+                    "group": "navigation"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run package",
+        "compile": "webpack",
+        "watch": "webpack --watch",
+        "package": "webpack --mode production --devtool hidden-source-map",
+        "compile-tests": "tsc -p . --outDir out",
+        "watch-tests": "tsc -p . -w --outDir out",
+        "pretest": "npm run compile-tests && npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.67.0",
+        "@types/glob": "^7.2.0",
+        "@types/mocha": "^9.1.1",
+        "@types/node": "14.x",
+        "@typescript-eslint/eslint-plugin": "^5.21.0",
+        "@typescript-eslint/parser": "^5.21.0",
+        "eslint": "^8.14.0",
+        "glob": "^8.0.1",
+        "mocha": "^9.2.2",
+        "typescript": "^4.6.4",
+        "ts-loader": "^9.2.8",
+        "webpack": "^5.70.0",
+        "webpack-cli": "^4.9.2",
+        "@vscode/test-electron": "^2.1.3"
+    }
+}

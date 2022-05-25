@@ -1,0 +1,21 @@
+#buttom-bar {
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+}
+.item {
+    display: flex;
+    flex-direction: row;
+}
+.editor {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.inputbox {
+    width: 98%;
+}
+#savebutton {
+    margin: auto;
+    margin-right: 0;
+}

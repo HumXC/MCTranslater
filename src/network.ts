@@ -60,7 +60,6 @@ function doHttp(options: https.RequestOptions, data: any = undefined): any {
                 let jsonData = JSON.parse(respData);
                 resolve(jsonData);
             } catch (error) {
-                console.log(respData);
                 reject(error);
             }
         });
@@ -77,20 +76,20 @@ export function baidu(
     appid: string,
     key: string
 ): Promise<BaiduResp> {
-    let solt = Math.ceil(Math.random() * 100000).toString();
-    let sign = md5(appid + str + solt + key);
+    let salt = Math.ceil(Math.random() * 100000).toString();
+    let sign = md5(appid + str + salt + key);
     let data: BaiduReq = {
-        q: str,
+        q: encodeURI(str),
         from: from,
         to: to,
         appid: appid,
-        salt: solt,
+        salt: salt,
         sign: sign,
     };
     let query: string = objToQuery(data);
     let options: https.RequestOptions = {
         hostname: `fanyi-api.baidu.com`,
-        path: `/api/trans/vip/translate?` + encodeURI(query),
+        path: `/api/trans/vip/translate?` + query,
         method: "GET",
         timeout: 10000,
     };

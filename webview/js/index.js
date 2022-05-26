@@ -87,15 +87,14 @@ function addItem(_items) {
     let parent = $("workbench");
     parent.innerHTML = "";
     for (let i = 0; i < _items.length; i++) {
+        let index = i + 1;
         let item = `
-        <label class="hide" for=${i + 1}>item</label>
-        <input type="checkbox" id="${
-            i + 1
-        }" class="checkbox item-checkbox" onClick="itemCheckedChange(this)"/>
+        <label class="hide" for=${index}>item</label>
+        <input type="checkbox" id="${index}" class="checkbox item-checkbox" onClick="itemCheckedChange(this)" title="${index}"/>
         
         <div class="editor">
-            <label for="e${i + 1}" class="inputlabel" >${lightColor(_items[i].src)}</label>
-            <input type="text" id="e${i + 1}" class="inputbox" value="${_items[i].dst}" title="${
+            <label for="e${index}" class="inputlabel" >${lightColor(_items[i].src)}</label>
+            <input type="text" id="e${index}" class="inputbox" value="${_items[i].dst}" title="${
             _items[i].name
         }"/>
     </div>`;

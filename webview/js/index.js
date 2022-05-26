@@ -55,7 +55,7 @@ function save(button) {
     doc.result = [];
     for (let i = 0; i < items.length; i++) {
         let _name = items[i].childNodes[5].childNodes[3].title;
-        let _dst = items[i].childNodes[5].childNodes[3].value;
+        let _dst = items[i].childNodes[5].childNodes[3].value.replace(/\\n/g, "\n");
         if (!items[i].childNodes[3].checked || _dst === "") {
             continue;
         }
@@ -96,12 +96,13 @@ function addItem(_items) {
         <input type="checkbox" id="${index}" class="checkbox item-checkbox" onClick="itemCheckedChange(this)" title="${index}"/>
         
         <div class="editor">
-            <label for="e${index}" class="inputlabel" >${lightColor(_items[i].src)
-            .replace(/</g, "&lt;")
-            .replace(/\>/g, "&gt;")}</label>
-            <input type="text" id="e${index}" class="inputbox" value="${_items[i].dst}" title="${
-            _items[i].name
-        }"/>
+            <label for="e${index}" class="inputlabel" >${lightColor(
+            _items[i].src.replace(/</g, "&lt;").replace(/\>/g, "&gt;").replace(/\n/g, "\\n")
+        )}</label>
+            <input type="text" id="e${index}" class="inputbox" value="${_items[i].dst.replace(
+            /\n/g,
+            "\\n"
+        )}" title="${_items[i].name}"/>
     </div>`;
         var div = document.createElement("div");
         div.className = "item";
@@ -122,11 +123,14 @@ function addItem(_items) {
 // 给特定字符加上颜色
 function lightColor(str) {
     return str
-        .replace(/\\/g, "<span style='color: red;'>$&</span>")
-        .replace(/\{/g, "<span style='color: red;'>$&</span>")
-        .replace(/\}/g, "<span style='color: red;'>$&</span>")
-        .replace(/\&/g, "<span style='color: red;'>$&</span>")
-        .replace(/\§/g, "<span style='color: red;'>$&</span>");
+        .replace(/\$/g, `<span class="high-light">$&</span>`)
+        .replace(/\\/g, `<span class="high-light">$&</span>`)
+        .replace(/\{/g, `<span class="high-light">$&</span>`)
+        .replace(/\}/g, `<span class="high-light">$&</span>`)
+        .replace(/\'/g, `<span class="high-light">$&</span>`)
+        .replace(/\§/g, `<span class="high-light">$&</span>`)
+        .replace(/\(/g, `<span class="high-light">$&</span>`)
+        .replace(/\)/g, `<span class="high-light">$&</span>`);
 }
 
 // 选择按钮状态改变

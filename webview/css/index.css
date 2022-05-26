@@ -178,3 +178,6 @@ table.inner-html-table th {
 table.inner-html-table thead tr {
     background-color: #f0f0f0;
 }
+.high-light {
+    color: red;
+}

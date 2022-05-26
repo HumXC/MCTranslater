@@ -1,0 +1,57 @@
+#top-bar {
+    height: 120px;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin: auto;
+    background: rgba(90, 90, 90, 0.071);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+#top-bar > .select-lang {
+    display: flex;
+    height: 50px;
+    width: 80%;
+    justify-content: center;
+    margin: auto;
+    border-radius: 10px;
+
+    background-color: rgb(24, 24, 24);
+    border: 2px solid #71717172;
+    box-shadow: 0px 0px 5px #969696;
+}
+#top-bar > .select-lang > input[type="button"] {
+    background-color: rgba(0, 0, 0, 0.829);
+    height: 24px;
+    width: 60px;
+    border-radius: 14px;
+    font-weight: 500;
+    color: #fffbfb;
+    margin: auto 0 auto 20px;
+    border: 2px;
+    border-style: solid;
+}
+#top-bar > .select-lang > input[type="button"]:hover {
+    border-color: #00e222;
+    box-shadow: 0 0 5px #00e240;
+}
+
+#top-bar > .select-lang > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+#top-bar > .select-lang > div > input {
+    text-align: center;
+    height: 18px;
+    width: 50px;
+    border-radius: 5px;
+}
+#top-bar > .select-lang > div > span {
+    text-align: center;
+    height: 18px;
+    width: 30px;
+    font-size: large;
+    line-height: 18px;
+    color: #fffbfb;
+}

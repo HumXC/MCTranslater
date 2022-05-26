@@ -7,12 +7,14 @@ import { Document, trHandleBaidu, WebviewDocument } from "./translate";
 export function activate(context: vscode.ExtensionContext) {
     console.log("激活扩展");
     let disposable = vscode.commands.registerCommand("mctranslator.openFile", (uri) => {
-        runCommand(context, uri);
+        createPanel(context).then((panel: vscode.WebviewPanel) => {
+            runCommand(context, panel, uri);
+        });
     });
 
     context.subscriptions.push(disposable);
 }
-async function createPanel(context: vscode.ExtensionContext) {
+async function createPanel(context: vscode.ExtensionContext): Promise<vscode.WebviewPanel> {
     const panel = vscode.window.createWebviewPanel(
         "mctranslator.tr",
         "翻译工作台",
@@ -31,7 +33,11 @@ async function createPanel(context: vscode.ExtensionContext) {
     return panel;
 }
 
-async function runCommand(context: vscode.ExtensionContext, uri: vscode.Uri) {
+async function runCommand(
+    context: vscode.ExtensionContext,
+    panel: vscode.WebviewPanel,
+    uri: vscode.Uri
+) {
     console.log("正在启动翻译");
     // 加载的字符串
     var doc: Document = {
@@ -45,13 +51,13 @@ async function runCommand(context: vscode.ExtensionContext, uri: vscode.Uri) {
     var conf = vscode.workspace.getConfiguration("mctranslator");
     var appid = conf.get("百度翻译_AppID") as string;
     var secretkey = conf.get("百度翻译_SecretKey") as string;
+    var autoTrslante = conf.get("自动翻译") as boolean;
     if (appid === undefined || secretkey === undefined) {
-        vscode.window.showErrorMessage("百度翻译配置不正确");
+        showError("百度翻译配置不正确");
         return;
     }
 
-    // 加载网页视图
-    const panel = await createPanel(context);
+    // 设置页面
     panel.webview.onDidReceiveMessage(async ({ type, data }) => {
         switch (type) {
             case "save":
@@ -83,10 +89,22 @@ async function runCommand(context: vscode.ExtensionContext, uri: vscode.Uri) {
                     }
                 } catch (error) {
                     panel.webview.postMessage({ type: "SaveFail" });
-                    vscode.window.showErrorMessage("保存失败:" + (error as Error).message);
+                    showError("保存失败", error);
                     return;
                 }
                 panel.webview.postMessage({ type: "Savesuccess" });
+                break;
+
+            case "Translate":
+                try {
+                    let setting = JSON.parse(data);
+                    await trHandleBaidu(doc, setting[0], setting[1], appid, secretkey);
+                } catch (error) {
+                    panel.webview.postMessage({ type: "TrslateFail" });
+                    showError("请求 API 时出现错误", error);
+                    return;
+                }
+                panel.webview.postMessage({ type: "Loadcomplete", data: JSON.stringify(doc) });
                 break;
             case "warn":
                 vscode.window.showWarningMessage(data);
@@ -98,18 +116,21 @@ async function runCommand(context: vscode.ExtensionContext, uri: vscode.Uri) {
         let d = fs.readFileSync(doc.path);
         doc.str = d.toString("utf-8");
     } catch (error) {
-        vscode.window.showErrorMessage("读取文件时出现了错误:\n" + error);
+        showError("读取文件时出现了错误", error);
         return;
     }
 
     doc.doctype = path.extname(uri.fsPath).replace(".", "");
     if (doc.doctype === "json") {
-        doc.obj = JSON.parse(doc.str);
+        try {
+            doc.obj = JSON.parse(doc.str);
+        } catch (error) {
+            showError("解析 Json 时出现了错误", error);
+        }
+
         for (const key in doc.obj) {
             if (Object.prototype.hasOwnProperty.call(doc.obj, key)) {
                 doc.result.push({ name: key, src: doc.obj[key] as string, dst: "" });
-            } else {
-                console.log("errr");
             }
         }
     } else {
@@ -123,13 +144,27 @@ async function runCommand(context: vscode.ExtensionContext, uri: vscode.Uri) {
         }
     }
 
-    try {
-        await trHandleBaidu(doc, appid, secretkey);
-    } catch (error) {
-        vscode.window.showErrorMessage("请求 API 时出现错误:" + (error as Error).message);
-        return;
+    if (autoTrslante) {
+        try {
+            await trHandleBaidu(doc, "auto", "zh", appid, secretkey);
+        } catch (error) {
+            showError("请求 API 时出现错误", error);
+            return;
+        }
     }
+
     panel.webview.postMessage({ type: "Loadcomplete", data: JSON.stringify(doc) });
 }
 
-export function deactivate() {}
+export function deactivate() {
+    console.log("停止活动");
+}
+function showError(msg: string, error: any = undefined) {
+    let message = "";
+    if (error === undefined || error.message === undefined) {
+        message = msg;
+    } else {
+        message = msg + ": " + (error as Error).message;
+    }
+    vscode.window.showErrorMessage(message);
+}

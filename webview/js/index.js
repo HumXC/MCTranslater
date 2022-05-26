@@ -4,11 +4,12 @@ var checkAll;
 var log;
 var items;
 var doc;
-var intervals = [];
+var progress = [];
+var $ = (id) => {
+    return document.getElementById(id);
+};
+
 window.addEventListener("message", (event) => {
-    for (let i = 0; i < intervals.length; i++) {
-        clearInterval(intervals[i]);
-    }
     let message = event.data;
 
     let data;
@@ -24,10 +25,13 @@ window.addEventListener("message", (event) => {
             addItem(data.result);
             break;
         case "Savesuccess":
-            log.innerText = "保存成功👍";
+            changeLog("👍保存成功  ");
             break;
         case "SaveFail":
-            log.innerText = "保存失败😫";
+            changeLog("😫保存失败  ");
+            break;
+        case "TrslateFail":
+            changeLog("😫翻译失败  ");
             break;
         default:
             break;
@@ -47,27 +51,22 @@ function test() {
 function save(button) {
     doc.result = [];
     for (let i = 0; i < items.length; i++) {
-        if (!items[i].childNodes[3].checked) {
-            continue;
-        }
         let _name = items[i].childNodes[5].childNodes[3].title;
         let _dst = items[i].childNodes[5].childNodes[3].value;
+        if (!items[i].childNodes[3].checked || _dst === "") {
+            continue;
+        }
         doc.result.push({ name: _name, dst: _dst });
     }
     if (doc.result.length === 0) {
-        log.innerText = "⚠️您尚未选择任何内容";
+        changeLog("⚠️您尚未选择任何内容  ");
         return;
     }
-    log.innerText = "正在保存";
+    logProgress("🤔正在保存  ");
     button.disabled = true;
     setTimeout(() => {
         button.disabled = false;
     }, 3000);
-    intervals.push(
-        setInterval(() => {
-            log.innerText += ".";
-        }, 100)
-    );
     vscode.postMessage({ type: "save", data: JSON.stringify(doc) });
 }
 function selectAll(checkAll) {
@@ -76,7 +75,7 @@ function selectAll(checkAll) {
     } else {
         selectCount = 0;
     }
-    log.innerText = `${selectCount} / ${items.length}`;
+    changeLog(`${selectCount} / ${items.length}`);
     for (let i = 0; i < items.length; i++) {
         items[i].childNodes[3].checked = checkAll.checked;
     }
@@ -84,7 +83,9 @@ function selectAll(checkAll) {
 }
 function addItem(_items) {
     //items = [{ name: "a", src: "AA", dst: "BBB" }];
-    let parent = document.getElementById("workbench");
+    stopAllProgress();
+    let parent = $("workbench");
+    parent.innerHTML = "";
     for (let i = 0; i < _items.length; i++) {
         let item = `
         <label class="hide" for=${i + 1}>item</label>
@@ -103,15 +104,16 @@ function addItem(_items) {
         div.innerHTML = item;
         parent.appendChild(div);
     }
+
+    // 恢复初始状态
     items = document.getElementsByClassName("item");
-    log = document.getElementById("log");
-    checkAll = document.getElementById("checkall");
+    log = $("log");
+    checkAll = $("checkall");
+    checkAll.checked = false;
+    selectAll(checkAll);
     selectCount = 0;
-    log.innerText = `${selectCount} / ${items.length}`;
+    changeLog("👍完成  ");
 }
-$ = (id) => {
-    return document.getElementById(id);
-};
 
 // 给特定字符加上颜色
 function lightColor(str) {
@@ -130,7 +132,7 @@ function itemCheckedChange(checkbox) {
     } else {
         --selectCount;
     }
-    log.innerText = `${selectCount} / ${items.length}`;
+    changeLog(`${selectCount} / ${items.length}`);
     if (selectCount === 0) {
         checkAll.checked = false;
         checkAll.className = "checkbox";
@@ -146,4 +148,47 @@ function itemCheckedChange(checkbox) {
     checkAll.checked = false;
     checkAll.className = "checkbox notcheckall";
     return;
+}
+
+// 主动翻译
+function _translate(button) {
+    let source = $("lang-source").value;
+    let target = $("lang-target").value;
+    if (source === "" || target === "") {
+        changeLog("⚠️语言代码不应该为空  ");
+        return;
+    }
+    logProgress("🤔正在翻译  ");
+    button.disabled = true;
+    setTimeout(() => {
+        button.disabled = false;
+    }, 3000);
+    vscode.postMessage({
+        type: "Translate",
+        data: `["${source}","${target}"]`,
+    });
+}
+// 用log表示进度
+function logProgress(msg) {
+    let count = 0;
+    log.innerText = msg;
+    let i;
+    i = setInterval(() => {
+        log.innerText += ".";
+        count++;
+        if (count > 100) {
+            changeLog("❓发生什么事了  ");
+        }
+    }, 100);
+    progress.push(i);
+}
+// 结束所有log进度
+function stopAllProgress() {
+    for (let i = 0; i < progress.length; i++) {
+        clearInterval(progress[i]);
+    }
+}
+function changeLog(msg) {
+    stopAllProgress();
+    log.innerText = msg;
 }

@@ -19,12 +19,18 @@ export type WebviewDocument = {
     // [{翻译的名称,待翻译的原文，翻译结果}]
     result: Array<{ name: string; dst: string }>;
 };
-export async function trHandleBaidu(doc: Document, appid: string, secretkey: string) {
+export async function trHandleBaidu(
+    doc: Document,
+    source: string,
+    target: string,
+    appid: string,
+    secretkey: string
+) {
     let queryStr = "";
     for (let i = 0; i < doc.result.length; i++) {
         queryStr += fomartQueryStr(doc.result[i].src) + "\n";
     }
-    let result = await baidu(queryStr, "en", "zh", appid, secretkey);
+    let result = await baidu(queryStr, source, target, appid, secretkey);
 
     let err = checkBaiduError(result);
     if (err !== undefined) {
@@ -33,7 +39,6 @@ export async function trHandleBaidu(doc: Document, appid: string, secretkey: str
 
     for (let i = 0; i < result.trans_result.length; i++) {
         let r = result.trans_result[i];
-
         if (fomartQueryStr(doc.result[i].src) === r.src) {
             doc.result[i].dst = deFomartQueryStr(r.dst);
         }

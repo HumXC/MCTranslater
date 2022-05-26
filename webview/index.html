@@ -6,10 +6,21 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Document</title>
         <link rel="stylesheet" href="./css/index.css" />
+        <link rel="stylesheet" href="./css/top-bar.css" />
         <script type="text/javascript" src="./js/index.js"></script>
     </head>
     <body>
-        <br />
+        <div id="top-bar">
+            <div class="select-lang">
+                <div>
+                    <input type="text" id="lang-source" title="语言代码-源语言" value="auto" />
+                    <span>	
+                        &#10140</span>
+                    <input type="text" id="lang-target" title="语言代码-目标语言" value="zh" />
+                </div>
+                <input type="button" value="翻译" onclick="_translate(this)"/>
+            </div>
+        </div>
         <div id="workbench"></div>
         <div id="bottom-bar">
             <label class="hide" for="checkall">全选</label>

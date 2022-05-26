@@ -10,7 +10,7 @@
     "displayName": "MCTranslator",
     "repository": "https://github.com/HumXC/MCTranslator",
     "description": "通过机翻协助诸如 Minecraft mod 等语言文件的翻译",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "engines": {
         "vscode": "^1.67.0"
     },
@@ -37,6 +37,12 @@
                     "type": "string",
                     "default": "",
                     "description": "百度翻译的密钥, 请前往 '百度翻译开放平台' 获取。"
+                },
+                "mctranslator.自动翻译": {
+                    "scope": "resource",
+                    "type": "boolean",
+                    "default": "true",
+                    "description": "启动时自动翻译 (自动检测语种->中文), 如果需要翻译成其他语言建议取消勾选"
                 }
             }
         },

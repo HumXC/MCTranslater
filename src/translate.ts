@@ -45,19 +45,23 @@ export async function trHandleBaidu(
     }
 }
 function fomartQueryStr(str: string): string {
-    // 去除可能会影响签名的字符,转换成url编码
+    // 去除可能会影响签名的字符,转换成自定义的编码
     return str
-        .replace(/\n/g, "[%0A]")
-        .replace(/\\/g, "[%5C]")
-        .replace(/\&/g, "[%26]")
-        .replace(/\+/g, "[%2B]")
-        .replace(/\§/g, "[%A7]");
+        .replace(/\n/g, "[%A]")
+        .replace(/\\/g, "[%B]")
+        .replace(/\&/g, "[%C]")
+        .replace(/\+/g, "[%D]")
+        .replace(/\§/g, "[%E]")
+        .replace(/\#/g, "[%F]")
+        .replace(/\_/g, "[%G]");
 }
 function deFomartQueryStr(str: string): string {
     return str
-        .replace(/\[\%0A\]/g, "\n")
-        .replace(/\[\%5C\]/g, "\\")
-        .replace(/\[\%26\]/g, "&")
-        .replace(/\[\%2B\]/g, "+")
-        .replace(/\[\%A7\]/g, "§");
+        .replace(/\[\%A\]/g, "\n")
+        .replace(/\[\%B\]/g, "\\")
+        .replace(/\[\%C\]/g, "&")
+        .replace(/\[\%D\]/g, "+")
+        .replace(/\[\%E\]/g, "§")
+        .replace(/\[\%F\]/g, "#")
+        .replace(/\[\%G\]/g, "_");
 }

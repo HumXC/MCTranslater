@@ -38,6 +38,9 @@ window.addEventListener("message", (event) => {
     }
 });
 function test() {
+    $ = (id) => {
+        return document.getElementById(id);
+    };
     let data = [];
     for (let i = 0; i < 20; i++) {
         data.push({
@@ -93,7 +96,9 @@ function addItem(_items) {
         <input type="checkbox" id="${index}" class="checkbox item-checkbox" onClick="itemCheckedChange(this)" title="${index}"/>
         
         <div class="editor">
-            <label for="e${index}" class="inputlabel" >${lightColor(_items[i].src)}</label>
+            <label for="e${index}" class="inputlabel" >${lightColor(_items[i].src)
+            .replace(/</g, "&lt;")
+            .replace(/\>/g, "&gt;")}</label>
             <input type="text" id="e${index}" class="inputbox" value="${_items[i].dst}" title="${
             _items[i].name
         }"/>
@@ -169,6 +174,9 @@ function _translate(button) {
 }
 // 用log表示进度
 function logProgress(msg) {
+    if (progress === undefined) {
+        progress = [];
+    }
     let count = 0;
     log.innerText = msg;
     let i;
@@ -183,6 +191,9 @@ function logProgress(msg) {
 }
 // 结束所有log进度
 function stopAllProgress() {
+    if (progress === undefined) {
+        progress = [];
+    }
     for (let i = 0; i < progress.length; i++) {
         clearInterval(progress[i]);
     }

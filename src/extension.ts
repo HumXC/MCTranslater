@@ -3,9 +3,12 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import { readHtml } from "./util";
 import { Document, trHandleBaidu, WebviewDocument } from "./translate";
-
+var outputChannel: vscode.OutputChannel;
 export function activate(context: vscode.ExtensionContext) {
-    console.log("激活扩展");
+    if (outputChannel === undefined) {
+        outputChannel = vscode.window.createOutputChannel("MCTranslator");
+    }
+    output("激活扩展");
     let disposable = vscode.commands.registerCommand("mctranslator.openFile", (uri) => {
         createPanel(context).then((panel: vscode.WebviewPanel) => {
             runCommand(context, panel, uri);
@@ -38,7 +41,7 @@ async function runCommand(
     panel: vscode.WebviewPanel,
     uri: vscode.Uri
 ) {
-    console.log("正在启动翻译");
+    output("正在启动翻译");
     // 加载的字符串
     var doc: Document = {
         str: "",
@@ -98,6 +101,9 @@ async function runCommand(
             case "Translate":
                 try {
                     let setting = JSON.parse(data);
+                    output(
+                        `开始翻译(webview): path=${doc.path}\n lang:${setting[0]}->${setting[1]}\n appid=${appid}\n secretkey=${secretkey}`
+                    );
                     await trHandleBaidu(doc, setting[0], setting[1], appid, secretkey);
                 } catch (error) {
                     panel.webview.postMessage({ type: "TrslateFail" });
@@ -143,8 +149,11 @@ async function runCommand(
             doc.result.push({ name: sp[0], src: sp[1], dst: "" });
         }
     }
-
+    // 开始自动翻译
     if (autoTrslante) {
+        output(
+            `开始自动翻译: path=${doc.path}\n lang:auto->zh\n appid=${appid}\n secretkey=${secretkey}`
+        );
         try {
             await trHandleBaidu(doc, "auto", "zh", appid, secretkey);
         } catch (error) {
@@ -157,14 +166,23 @@ async function runCommand(
 }
 
 export function deactivate() {
-    console.log("停止活动");
+    output("停止活动");
 }
 function showError(msg: string, error: any = undefined) {
-    let message = "";
+    let windowMmessage = "";
+    let channelMessage = "";
     if (error === undefined || error.message === undefined) {
-        message = msg;
+        windowMmessage = msg;
+        channelMessage = msg;
     } else {
-        message = msg + ": " + (error as Error).message;
+        windowMmessage = msg + ": " + (error as Error).message;
+        channelMessage = msg + ": \n" + (error as Error).message + "\n" + (error as Error).stack;
     }
-    vscode.window.showErrorMessage(message);
+    output(channelMessage);
+    vscode.window.showErrorMessage(windowMmessage);
+}
+
+// 输出到容器
+function output(msg: string) {
+    outputChannel.appendLine(msg);
 }

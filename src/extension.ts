@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import { readHtml } from "./util";
 import { Document, trHandleBaidu, WebviewDocument } from "./translate";
-var outputChannel: vscode.OutputChannel;
+let outputChannel: vscode.OutputChannel;
 export function activate(context: vscode.ExtensionContext) {
     if (outputChannel === undefined) {
         outputChannel = vscode.window.createOutputChannel("MCTranslator");
@@ -43,7 +43,7 @@ async function runCommand(
 ) {
     output("正在启动翻译");
     // 加载的字符串
-    var doc: Document = {
+    let doc: Document = {
         str: "",
         obj: {},
         doctype: "unknow",
@@ -51,10 +51,11 @@ async function runCommand(
         path: uri.fsPath,
     };
     // 获取配置
-    var conf = vscode.workspace.getConfiguration("mctranslator");
-    var appid = conf.get("百度翻译_AppID") as string;
-    var secretkey = conf.get("百度翻译_SecretKey") as string;
-    var autoTrslante = conf.get("自动翻译") as boolean;
+    let conf = vscode.workspace.getConfiguration("mctranslator");
+    let appid = conf.get("百度翻译_AppID") as string;
+    let secretkey = conf.get("百度翻译_SecretKey") as string;
+    let isAdvancedVersion = conf.get("百度翻译_高级版API") as boolean;
+    let autoTrslante = conf.get("自动翻译") as boolean;
     if (appid === undefined || secretkey === undefined) {
         showError("百度翻译配置不正确");
         return;
@@ -104,7 +105,14 @@ async function runCommand(
                     output(
                         `开始翻译(webview): path=${doc.path}\n lang:${setting[0]}->${setting[1]}\n appid=${appid}\n secretkey=${secretkey}`
                     );
-                    await trHandleBaidu(doc, setting[0], setting[1], appid, secretkey);
+                    await trHandleBaidu(
+                        doc,
+                        setting[0],
+                        setting[1],
+                        appid,
+                        secretkey,
+                        isAdvancedVersion
+                    );
                 } catch (error) {
                     panel.webview.postMessage({ type: "TrslateFail" });
                     showError("请求 API 时出现错误", error);
@@ -155,7 +163,7 @@ async function runCommand(
             `开始自动翻译: path=${doc.path}\n lang:auto->zh\n appid=${appid}\n secretkey=${secretkey}`
         );
         try {
-            await trHandleBaidu(doc, "auto", "zh", appid, secretkey);
+            await trHandleBaidu(doc, "auto", "zh", appid, secretkey, isAdvancedVersion);
         } catch (error) {
             showError("请求 API 时出现错误", error);
             return;

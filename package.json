@@ -38,6 +38,12 @@
                     "default": "",
                     "description": "百度翻译的密钥, 请前往 '百度翻译开放平台' 获取。"
                 },
+                "mctranslator.百度翻译_高级版API": {
+                    "scope": "resource",
+                    "type": "boolean",
+                    "default": "",
+                    "description": "百度翻译API的版本, false 为标准版, true 为高级版。"
+                },
                 "mctranslator.自动翻译": {
                     "scope": "resource",
                     "type": "boolean",

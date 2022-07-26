@@ -42,6 +42,7 @@ export type BaiduResp = {
 };
 /** 发送http请求 */
 function doHttp(options: https.RequestOptions, data: any = undefined): any {
+    let a = "";
     return new Promise((resolve, reject) => {
         var respData: string = "";
         const req = https.request(options, (res) => {

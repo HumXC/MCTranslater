@@ -11,7 +11,7 @@ export function activate(context: vscode.ExtensionContext) {
     output("激活扩展");
     let disposable = vscode.commands.registerCommand("mctranslator.openFile", (uri) => {
         createPanel(context).then((panel: vscode.WebviewPanel) => {
-            runCommand(context, panel, uri);
+            runCommand(panel, uri);
         });
     });
 
@@ -36,11 +36,7 @@ async function createPanel(context: vscode.ExtensionContext): Promise<vscode.Web
     return panel;
 }
 
-async function runCommand(
-    context: vscode.ExtensionContext,
-    panel: vscode.WebviewPanel,
-    uri: vscode.Uri
-) {
+async function runCommand(panel: vscode.WebviewPanel, uri: vscode.Uri) {
     output("正在启动翻译");
     // 加载的字符串
     let doc: Document = {

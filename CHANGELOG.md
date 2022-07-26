@@ -1,3 +1,14 @@
+<!--
+ * @Author: HumXC Hum-XC@outlook.com
+ * @Date: 2022-05-24
+ * @LastEditors: HumXC Hum-XC@outlook.com
+ * @LastEditTime: 2022-07-26
+ * @FilePath: \MCTranslator\CHANGELOG.md
+ * @Description:
+ *
+ * Copyright (c) 2022 by HumXC Hum-XC@outlook.com, All Rights Reserved.
+-->
+
 # Change Log
 
 ## [Unreleased]
@@ -31,3 +42,13 @@
 ### Fixed
 
 -   修复译文中出现特殊符号时会破坏页面和导致翻译异常的问题
+
+## [0.0.5] - 2022-07-26
+
+### Added
+
+-   高级版 API 配置项
+
+### Fixed
+
+-   修复译文为空字符时造成的异常
